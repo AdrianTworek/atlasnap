@@ -1,0 +1,3 @@
+"""
+Atlasnap application package.
+"""
