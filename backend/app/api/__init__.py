@@ -1,3 +1,1 @@
-"""
-Atlasnap API package.
-"""
+# API package

@@ -1,3 +1,1 @@
-"""
-Atlasnap application package.
-"""
+# Application package
