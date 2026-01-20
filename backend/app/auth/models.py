@@ -1,9 +1,19 @@
-from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from fastapi_users.db import (
+    SQLAlchemyBaseOAuthAccountTableUUID,
+    SQLAlchemyBaseUserTableUUID,
+)
+from sqlalchemy.orm import Mapped, relationship
 
-from app.core.database import TimestampedBase
+from app.core.database import Base, TimestampedBase
+
+
+class OAuthAccount(SQLAlchemyBaseOAuthAccountTableUUID, Base):
+    pass
 
 
 class User(SQLAlchemyBaseUserTableUUID, TimestampedBase):
     """User model."""
 
-    __tablename__ = "users"
+    oauth_accounts: Mapped[list[OAuthAccount]] = relationship(
+        "OAuthAccount", lazy="joined"
+    )

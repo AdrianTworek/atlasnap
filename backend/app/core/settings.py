@@ -28,5 +28,9 @@ class Settings(BaseSettings):
     jwt_secret: SecretStr = SecretStr("change_me")
     jwt_lifetime_seconds: int = 3600
 
+    # Google OAuth
+    google_client_id: SecretStr
+    google_client_secret: SecretStr
+
 
 settings = Settings()

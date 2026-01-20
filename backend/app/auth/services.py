@@ -8,6 +8,7 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
+from httpx_oauth.clients.google import GoogleOAuth2
 
 from app.core.settings import settings
 from app.core.database import get_user_db
@@ -62,4 +63,14 @@ def get_jwt_strategy() -> JWTStrategy:
 
 auth_backend = AuthenticationBackend(
     name="jwt", transport=bearer_transport, get_strategy=get_jwt_strategy
+)
+
+google_oauth_client = GoogleOAuth2(
+    client_id=settings.google_client_id.get_secret_value(),
+    client_secret=settings.google_client_secret.get_secret_value(),
+    scopes=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+    ],
 )

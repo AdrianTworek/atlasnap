@@ -55,6 +55,6 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     """Get a user database."""
-    from app.auth.models import User
+    from app.auth.models import User, OAuthAccount
 
-    yield SQLAlchemyUserDatabase(session, User)
+    yield SQLAlchemyUserDatabase(session, User, OAuthAccount)
