@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import PostgresDsn
+from pydantic import Field, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,9 +20,13 @@ class Settings(BaseSettings):
     debug: bool = True
 
     # Database
-    database_url: PostgresDsn = (
-        "postgresql+asyncpg://postgres:postgres@db:5432/atlasnap"
+    database_url: PostgresDsn = Field(
+        default="postgresql+asyncpg://postgres:postgres@db:5432/atlasnap", repr=False
     )
+
+    # Auth
+    jwt_secret: SecretStr = SecretStr("change_me")
+    jwt_lifetime_seconds: int = 3600
 
 
 settings = Settings()

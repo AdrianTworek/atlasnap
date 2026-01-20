@@ -3,20 +3,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.database import Base, engine
+from app.core.database import create_db_and_tables
 from app.core.settings import settings
+from app.auth.router import router as auth_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup/shutdown events."""
-    # Database
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
+    await create_db_and_tables()
     yield
-
-    await engine.dispose()
 
 
 app = FastAPI(
@@ -33,6 +29,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 
 
 @app.get("/", tags=["root"])
