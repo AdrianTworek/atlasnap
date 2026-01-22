@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.database import create_db_and_tables
 from app.core.settings import settings
 from app.auth.router import router as auth_router
 
@@ -11,7 +10,6 @@ from app.auth.router import router as auth_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup/shutdown events."""
-    await create_db_and_tables()
     yield
 
 

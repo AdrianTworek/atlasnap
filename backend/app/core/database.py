@@ -3,11 +3,20 @@ from datetime import datetime
 
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyUserDatabase
-from sqlalchemy import DateTime, func
+from sqlalchemy import MetaData, DateTime, func
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.core.settings import settings
+
+POSTGRES_INDEXES_NAMING_CONVENTION = {
+    "ix": "%(column_0_label)s_idx",
+    "uq": "%(table_name)s_%(column_0_name)s_key",
+    "ck": "%(table_name)s_%(constraint_name)s_check",
+    "fk": "%(table_name)s_%(column_0_name)s_fkey",
+    "pk": "%(table_name)s_pkey",
+}
+metadata = MetaData(naming_convention=POSTGRES_INDEXES_NAMING_CONVENTION)
 
 engine = create_async_engine(
     str(settings.database_url), echo=settings.debug, future=True
@@ -25,7 +34,7 @@ async_session_maker = async_sessionmaker(
 class Base(DeclarativeBase):
     """Base class for all database models."""
 
-    pass
+    metadata = metadata
 
 
 class TimestampedBase(Base):

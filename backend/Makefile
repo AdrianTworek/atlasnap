@@ -1,4 +1,4 @@
-.PHONY: build up up-d down clean logs format lint lint-fix
+.PHONY: build up up-d down clean logs format lint lint-fix migrate upgrade downgrade
 
 build: ## Build the project
 	docker compose build
@@ -26,3 +26,12 @@ lint: ## Run linter
 
 lint-fix: ## Run linter and fix issues
 	docker compose run --rm api sh -c "uv run ruff check . --fix"
+
+migrate: ## Create a new migration (usage: make migrate MESSAGE="description")
+	docker compose run --rm api sh -c "uv run alembic revision --autogenerate -m '$(MESSAGE)'"
+
+upgrade: ## Apply migrations
+	docker compose run --rm api sh -c "uv run alembic upgrade head"
+
+downgrade: ## Rollback one migration
+	docker compose run --rm api sh -c "uv run alembic downgrade -1"

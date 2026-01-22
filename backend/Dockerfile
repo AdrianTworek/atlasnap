@@ -24,7 +24,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM base
 COPY --from=builder /usr/local/bin/uv /usr/local/bin/uv
-COPY --from=builder /app /app
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/pyproject.toml /app/pyproject.toml
+COPY --from=builder /app/uv.lock /app/uv.lock
+
+COPY app/ /app/app
+COPY alembic/ /app/alembic
+COPY alembic.ini /app/alembic.ini
 
 EXPOSE 8000
 

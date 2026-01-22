@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     version: str = "0.1.0"
     environment: str = "development"
     debug: bool = True
+    log_level: str = "INFO"
 
     # Database
     database_url: PostgresDsn = Field(
