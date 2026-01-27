@@ -33,5 +33,23 @@ class Settings(BaseSettings):
     google_client_id: SecretStr
     google_client_secret: SecretStr
 
+    # AWS S3
+    aws_access_key_id: SecretStr = SecretStr("test")
+    aws_secret_access_key: SecretStr = SecretStr("test")
+    aws_region: str = "eu-central-1"
+    aws_bucket_name: str = "atlasnap-media"
+    s3_endpoint_url: str | None = None  # For LocalStack
+
+    # Upload limits
+    max_upload_size_mb: int = 100
+    allowed_image_types: list[str] = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+        "image/heic",
+    ]
+    allowed_video_types: list[str] = ["video/mp4", "video/quicktime", "video/webm"]
+
 
 settings = Settings()
