@@ -4,7 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.settings import settings
+from app.core.exception_handlers import register_exception_handlers
 from app.auth.router import router as auth_router
+from app.media.router import router as media_router
 
 
 @asynccontextmanager
@@ -28,7 +30,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+register_exception_handlers(app)
+
 app.include_router(auth_router, prefix="/api/v1/auth")
+app.include_router(media_router, prefix="/api/v1/media", tags=["media"])
 
 
 @app.get("/", tags=["root"])
