@@ -10,6 +10,7 @@ from alembic import context
 # Import your models and Base
 from app.core.database import Base
 from app.auth.models import User, OAuthAccount  # noqa: F401
+from app.media.models import Media  # noqa: F401
 
 # Import settings
 from app.core.settings import settings
