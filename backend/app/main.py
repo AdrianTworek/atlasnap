@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from app.core.settings import settings
 from app.core.exception_handlers import register_exception_handlers
@@ -36,13 +37,21 @@ app.include_router(auth_router, prefix="/api/v1/auth")
 app.include_router(media_router, prefix="/api/v1/media", tags=["media"])
 
 
-@app.get("/", tags=["root"])
+class RootResponse(BaseModel):
+    message: str
+
+
+@app.get("/", tags=["root"], response_model=RootResponse)
 def root():
     """Root endpoint."""
     return {"message": "Welcome to Atlasnap API!"}
 
 
-@app.get("/health", tags=["health"])
+class HealthCheckResponse(BaseModel):
+    status: str
+
+
+@app.get("/health", tags=["health"], response_model=HealthCheckResponse)
 def health_check():
     """Health check endpoint."""
     return {"status": "ok"}
