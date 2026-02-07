@@ -17,7 +17,6 @@ export const useStore = create<Store>()(
 				name: "auth-storage",
 				partialize: (state) => ({
 					token: state.token,
-					isAuthenticated: state.isAuthenticated,
 				}),
 			},
 		),

@@ -3,9 +3,12 @@ import type { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,
 	HeadContent,
+	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Toaster } from "sonner";
+import { useAuth } from "@/features/auth/hooks/use-auth";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
@@ -35,10 +38,22 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 		],
 	}),
 
+	component: RootComponent,
 	shellComponent: RootDocument,
+	notFoundComponent: NotFound,
 });
 
+function RootComponent() {
+	return <Outlet />;
+}
+
+function NotFound() {
+	return <div>Not Found</div>;
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
+	useAuth();
+
 	return (
 		<html lang="en">
 			<head>
@@ -46,6 +61,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body>
 				{children}
+				<Toaster />
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",
