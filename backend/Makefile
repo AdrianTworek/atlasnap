@@ -27,8 +27,8 @@ lint: ## Run linter
 lint-fix: ## Run linter and fix issues
 	docker compose run --rm api sh -c "uv run ruff check . --fix"
 
-migrate: ## Create a new migration (usage: make migrate MESSAGE="description")
-	docker compose run --rm api sh -c "uv run alembic revision --autogenerate -m '$(MESSAGE)'"
+migrate: ## Create a new migration (usage: make migrate message="description")
+	docker compose run --rm api sh -c "uv run alembic revision --autogenerate -m '$(message)'"
 
 upgrade: ## Apply migrations
 	docker compose run --rm api sh -c "uv run alembic upgrade head"

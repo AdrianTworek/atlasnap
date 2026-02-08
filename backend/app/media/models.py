@@ -2,7 +2,7 @@ import uuid
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import JSON, Boolean, ForeignKey, Enum as SQLEnum, Integer, String, Text
+import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -37,26 +37,26 @@ class Media(TimestampedBase):
 
     # User relationship
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True
+        sa.ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True
     )
     user: Mapped["User"] = relationship("User", back_populates="media")
 
     # Media properties
-    media_type: Mapped[Type] = mapped_column(SQLEnum(Type), nullable=False, index=True)
+    media_type: Mapped[Type] = mapped_column(sa.Enum(Type), nullable=False, index=True)
     status: Mapped[Status] = mapped_column(
-        SQLEnum(Status), default=Status.PENDING, nullable=False, index=True
+        sa.Enum(Status), default=Status.PENDING, nullable=False, index=True
     )
 
     # S3 storage
-    s3_key: Mapped[str] = mapped_column(String(500), nullable=False, unique=True)
-    s3_bucket: Mapped[str] = mapped_column(String(255), nullable=False)
-    original_filename: Mapped[str] = mapped_column(String(500), nullable=False)
+    s3_key: Mapped[str] = mapped_column(sa.String(500), nullable=False, unique=True)
+    s3_bucket: Mapped[str] = mapped_column(sa.String(255), nullable=False)
+    original_filename: Mapped[str] = mapped_column(sa.String(500), nullable=False)
 
     # File metadata
-    file_size: Mapped[int] = mapped_column(Integer, nullable=False)
-    mime_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    file_size: Mapped[int] = mapped_column(sa.Integer, nullable=False)
+    mime_type: Mapped[str] = mapped_column(sa.String(100), nullable=False)
 
     # User metadata
-    user_tags: Mapped[Optional[list[str]]] = mapped_column(JSON, nullable=True)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    is_favorite: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    user_tags: Mapped[Optional[list[str]]] = mapped_column(sa.JSON, nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(sa.Text, nullable=True)
+    is_favorite: Mapped[bool] = mapped_column(sa.Boolean, default=False, nullable=False)

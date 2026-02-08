@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     # Google OAuth
     google_client_id: SecretStr
     google_client_secret: SecretStr
+    google_redirect_url: str = (
+        "http://localhost:8000/api/v1/auth/google/callback/redirect"
+    )
+    google_frontend_redirect_url: str = "http://localhost:3000/auth/google/callback"
 
     # AWS
     aws_access_key_id: SecretStr = SecretStr("test")

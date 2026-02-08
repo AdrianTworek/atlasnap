@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi.security import HTTPBearer
 from fastapi import Depends, Request, status
 from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
@@ -9,10 +10,11 @@ from fastapi_users.authentication import (
     BearerTransport,
     JWTStrategy,
 )
-from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from fastapi_users import exceptions
 from fastapi_users import models
 from httpx_oauth.clients.google import GoogleOAuth2
+import httpx
 
 from app.core.settings import settings
 from app.core.database import get_user_db
@@ -46,7 +48,7 @@ class UserManager(UUIDIDMixin, BaseUserManager):
         verified, updated_password_hash = self.password_helper.verify_and_update(
             credentials.password, user.hashed_password
         )
-        if not verified:
+        if not verified or not user.has_password:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="LOGIN_BAD_CREDENTIALS"
             )
@@ -94,7 +96,20 @@ async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db
     yield UserManager(user_db)
 
 
-bearer_transport = BearerTransport(tokenUrl="api/v1/auth/jwt/login")
+class HTTPBearerTokenOnly(HTTPBearer):
+    async def __call__(self, request: Request):
+        credentials = await super().__call__(request)
+        if credentials:
+            return credentials.credentials
+        return None
+
+
+class SimpleBearerTransport(BearerTransport):
+    def __init__(self):
+        self.scheme = HTTPBearerTokenOnly()
+
+
+bearer_transport = SimpleBearerTransport()
 
 
 def get_jwt_strategy() -> JWTStrategy:
@@ -117,3 +132,13 @@ google_oauth_client = GoogleOAuth2(
         "https://www.googleapis.com/auth/userinfo.profile",
     ],
 )
+
+
+async def fetch_google_profile(access_token: str) -> dict:
+    async with httpx.AsyncClient() as client:
+        res = await client.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        res.raise_for_status()
+        return res.json()

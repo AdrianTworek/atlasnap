@@ -5,6 +5,7 @@ from fastapi_users import schemas
 
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
+    avatar_url: str | None
     created_at: datetime
     updated_at: datetime
 
