@@ -20,6 +20,7 @@ export * from './confirmUploadRequest';
 export * from './downloadUrlResponse';
 export * from './errorModel';
 export * from './errorModelDetail';
+export * from './googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams';
 export * from './healthCheckResponse';
 export * from './hTTPValidationError';
 export * from './listMediaApiV1MediaGetParams';

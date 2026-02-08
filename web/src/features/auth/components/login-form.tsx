@@ -1,8 +1,12 @@
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import * as z from "zod";
-import { useAuthJwtLoginApiV1AuthJwtLoginPost } from "@/api/generated/api";
+import {
+	oauthGoogleJwtAuthorizeApiV1AuthGoogleAuthorizeGet,
+	useAuthJwtLoginApiV1AuthJwtLoginPost,
+} from "@/api/generated/api";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -51,6 +55,18 @@ export const LoginForm = () => {
 			}
 		},
 	});
+
+	const handleGoogleLogin = async () => {
+		try {
+			const { authorization_url } =
+				await oauthGoogleJwtAuthorizeApiV1AuthGoogleAuthorizeGet();
+			window.location.href = authorization_url;
+		} catch {
+			toast.error("Failed to initiate Google sign-in. Please try again.", {
+				duration: 5000,
+			});
+		}
+	};
 
 	return (
 		<Card className="w-full max-w-sm">
@@ -131,6 +147,24 @@ export const LoginForm = () => {
 							</Button>
 						)}
 					</form.Subscribe>
+
+					<div className="relative my-4">
+						<div className="absolute inset-0 flex items-center">
+							<span className="w-full border-t" />
+						</div>
+						<div className="relative flex justify-center text-xs uppercase">
+							<span className="bg-card px-2 text-muted-foreground">or</span>
+						</div>
+					</div>
+
+					<Button
+						type="button"
+						variant="outline"
+						className="w-full"
+						onClick={handleGoogleLogin}
+					>
+						<FcGoogle /> Continue with Google
+					</Button>
 				</form>
 				<CardFooter className="flex justify-center mt-4">
 					<Link to="/register" className="text-sm">

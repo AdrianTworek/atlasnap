@@ -30,9 +30,17 @@ export const Navbar = () => {
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant="ghost" className="gap-2">
-									<span className="h-8 w-8 rounded-full bg-neutral-200 flex items-center justify-center text-sm font-medium">
-										{user.email[0].toUpperCase()}
-									</span>
+									{user.avatar_url ? (
+										<img
+											src={user.avatar_url}
+											alt={`${user.email}'s avatar`}
+											className="h-8 w-8 rounded-full"
+										/>
+									) : (
+										<span className="h-8 w-8 rounded-full bg-neutral-200 flex items-center justify-center text-sm font-medium">
+											{user.email[0].toUpperCase()}
+										</span>
+									)}
 									<span className="hidden sm:inline">{user.email}</span>
 								</Button>
 							</DropdownMenuTrigger>

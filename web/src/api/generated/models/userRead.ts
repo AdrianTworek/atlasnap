@@ -12,6 +12,7 @@ export interface UserRead {
   is_active?: boolean;
   is_superuser?: boolean;
   is_verified?: boolean;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }

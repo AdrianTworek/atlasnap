@@ -37,6 +37,7 @@ import type {
   BodyVerifyVerifyApiV1AuthVerifyPost,
   DownloadUrlResponse,
   ErrorModel,
+  GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams,
   HTTPValidationError,
   HealthCheckResponse,
   ListMediaApiV1MediaGetParams,
@@ -1062,6 +1063,98 @@ export function useOauthGoogleJwtCallbackApiV1AuthGoogleCallbackGet<TData = Awai
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getOauthGoogleJwtCallbackApiV1AuthGoogleCallbackGetQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+/**
+ * @summary Google Callback Redirect
+ */
+export const googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet = (
+    params: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return apiClient<unknown>(
+      {url: `http://localhost:8000/api/v1/auth/google/callback/redirect`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetQueryKey = (params?: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams,) => {
+    return [
+    `http://localhost:8000/api/v1/auth/google/callback/redirect`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetQueryOptions = <TData = Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError = HTTPValidationError>(params: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>> = ({ signal }) => googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetQueryResult = NonNullable<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>>
+export type GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetQueryError = HTTPValidationError
+
+
+export function useGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet<TData = Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError = HTTPValidationError>(
+ params: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>,
+          TError,
+          Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet<TData = Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError = HTTPValidationError>(
+ params: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>,
+          TError,
+          Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet<TData = Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError = HTTPValidationError>(
+ params: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Google Callback Redirect
+ */
+
+export function useGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet<TData = Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError = HTTPValidationError>(
+ params: GoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof googleCallbackRedirectApiV1AuthGoogleCallbackRedirectGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGoogleCallbackRedirectApiV1AuthGoogleCallbackRedirectGetQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
