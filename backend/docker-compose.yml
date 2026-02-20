@@ -27,6 +27,8 @@ services:
         condition: service_healthy
       localstack:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     image: postgres:17-alpine
@@ -61,6 +63,20 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:8-alpine
+    expose:
+      - "6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - redis_data:/data
+
 volumes:
   postgres_data:
   localstack_data:
+  redis_data:

@@ -1,6 +1,7 @@
 import secrets
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import RedirectResponse
+from fastapi.routing import APIRoute
 from fastapi_users.password import PasswordHelper
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,32 +18,66 @@ from .services import (
 
 from app.core.settings import settings
 from app.core.database import get_async_session
+from app.core.limiter import limiter
 
 SECRET = settings.jwt_secret.get_secret_value()
 
+
+def apply_rate_limit(router, path: str, method: str, limit_str: str):
+    """Apply rate limit to fastapi-users auth routes."""
+    for route in router.routes:
+        if (
+            isinstance(route, APIRoute)
+            and route.path == path
+            and method.upper() in route.methods
+        ):
+            route.endpoint = limiter.limit(limit_str)(route.endpoint)
+
+
 router = APIRouter()
 
+# Login
+login_router = fastapi_users.get_auth_router(auth_backend)
+apply_rate_limit(login_router, "/login", "POST", "5/minute")
 router.include_router(
-    fastapi_users.get_auth_router(auth_backend),
+    login_router,
     prefix="/jwt",
     tags=["auth"],
 )
+
+# Register
+register_router = fastapi_users.get_register_router(UserRead, UserCreate)
+apply_rate_limit(register_router, "/register", "POST", "5/day")
 router.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
+    register_router,
     tags=["auth"],
 )
+
+# Reset password
+reset_password_router = fastapi_users.get_reset_password_router()
+apply_rate_limit(reset_password_router, "/reset-password", "POST", "5/hour")
+apply_rate_limit(reset_password_router, "/forgot-password", "POST", "5/hour")
 router.include_router(
-    fastapi_users.get_reset_password_router(),
+    reset_password_router,
     tags=["auth"],
 )
+
+# Verify
+verify_router = fastapi_users.get_verify_router(UserRead)
+apply_rate_limit(verify_router, "/request-verify-token", "POST", "5/hour")
+apply_rate_limit(verify_router, "/verify", "POST", "5/hour")
 router.include_router(
-    fastapi_users.get_verify_router(UserRead),
+    verify_router,
     tags=["auth"],
 )
+
+# Users
 router.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     tags=["auth"],
 )
+
+# Google OAuth
 router.include_router(
     fastapi_users.get_oauth_router(
         google_oauth_client,

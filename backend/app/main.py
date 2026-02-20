@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.core.settings import settings
+from app.core.limiter import register_limiter
 from app.core.exception_handlers import register_exception_handlers
 from app.auth.router import router as auth_router
 from app.media.router import router as media_router
@@ -22,6 +23,8 @@ app = FastAPI(
     version=settings.version,
     lifespan=lifespan,
 )
+
+register_limiter(app)
 
 app.add_middleware(
     CORSMiddleware,
