@@ -14,6 +14,7 @@ class S3Service:
 
     def __init__(self):
         self._client: boto3.client | None = None
+        self._presign_client: boto3.client | None = None
 
     @property
     def client(self):
@@ -28,6 +29,25 @@ class S3Service:
                 config=Config(signature_version="s3v4"),
             )
         return self._client
+
+    @property
+    def presign_client(self):
+        """Lazy initialization of the S3 client used for presigned URLs.
+
+        Use the public endpoint for URLs returned to the browser and fall back
+        to the internal endpoint if a public endpoint is not configured.
+        """
+        if self._presign_client is None:
+            endpoint_url = settings.s3_public_endpoint_url or settings.s3_endpoint_url
+            self._presign_client = boto3.client(
+                "s3",
+                aws_access_key_id=settings.aws_access_key_id.get_secret_value(),
+                aws_secret_access_key=settings.aws_secret_access_key.get_secret_value(),
+                region_name=settings.aws_region,
+                endpoint_url=endpoint_url,
+                config=Config(signature_version="s3v4"),
+            )
+        return self._presign_client
 
     def generate_upload_key(self, user_id: uuid.UUID, filename: str) -> str:
         """Generate a unique S3 key for upload."""
@@ -45,7 +65,7 @@ class S3Service:
     ) -> str:
         """Create a presigned upload URL for uploading to S3."""
         try:
-            return self.client.generate_presigned_url(
+            return self.presign_client.generate_presigned_url(
                 "put_object",
                 Params={
                     "Bucket": settings.s3_bucket_name,
@@ -70,7 +90,7 @@ class S3Service:
             params["ResponseContentDisposition"] = f"attachment; filename={filename}"
 
         try:
-            return self.client.generate_presigned_url(
+            return self.presign_client.generate_presigned_url(
                 "get_object",
                 Params=params,
                 ExpiresIn=expires_in,

@@ -42,7 +42,10 @@ class Settings(BaseSettings):
     aws_secret_access_key: SecretStr = SecretStr("test")
     aws_region: str = "eu-central-1"
     s3_bucket_name: str = "atlasnap-media"
-    s3_endpoint_url: str | None = None  # For LocalStack
+    # internal: used by API container to talk to localstack container
+    s3_endpoint_url: str | None = None
+    # public: used only for presigned URLs returned to client
+    s3_public_endpoint_url: str | None = None
 
     # Upload limits
     max_upload_size_mb: int = 100
