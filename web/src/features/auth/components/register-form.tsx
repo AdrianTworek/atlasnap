@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
+import * as React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -38,6 +39,7 @@ const registerFormSchema = z
 export const RegisterForm = () => {
 	const registerMutation = useRegisterRegisterApiV1AuthRegisterPost();
 	const navigate = useNavigate();
+	const formId = React.useId();
 
 	const form = useForm({
 		defaultValues: {
@@ -93,7 +95,7 @@ export const RegisterForm = () => {
 			</CardHeader>
 			<CardContent>
 				<form
-					id="register-form"
+					id={formId}
 					onSubmit={(e) => {
 						e.preventDefault();
 						form.handleSubmit();

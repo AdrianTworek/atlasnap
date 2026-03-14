@@ -23,6 +23,8 @@ export const useAuth = () => {
 			query: {
 				enabled: !!token,
 				retry: false,
+				staleTime: 5 * 60_000,
+				gcTime: 10 * 60_000,
 			},
 		}),
 	);

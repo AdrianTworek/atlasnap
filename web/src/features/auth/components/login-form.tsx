@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
+import * as React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -29,6 +30,7 @@ export const LoginForm = () => {
 	const loginMutation = useAuthJwtLoginApiV1AuthJwtLoginPost();
 	const navigate = useNavigate();
 	const setToken = useStore((state) => state.setToken);
+	const formId = React.useId();
 
 	const form = useForm({
 		defaultValues: {
@@ -75,7 +77,7 @@ export const LoginForm = () => {
 			</CardHeader>
 			<CardContent>
 				<form
-					id="login-form"
+					id={formId}
 					onSubmit={(e) => {
 						e.preventDefault();
 						form.handleSubmit();

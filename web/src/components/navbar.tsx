@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ImageIcon, LogOutIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -8,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { useStore } from "@/store";
+import { Separator } from "./ui/separator";
 
 export const Navbar = () => {
 	const { user, isAuthenticated } = useAuth();
@@ -45,11 +47,20 @@ export const Navbar = () => {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end" className="w-48">
+								<DropdownMenuItem asChild className="cursor-pointer">
+									<Link to="/media">
+										<ImageIcon />
+										Media
+									</Link>
+								</DropdownMenuItem>
+
+								<Separator />
+
 								<DropdownMenuItem
 									onClick={handleLogout}
 									className="cursor-pointer"
 								>
-									Log out
+									<LogOutIcon /> Log out
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
